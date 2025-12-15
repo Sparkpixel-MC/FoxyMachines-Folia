@@ -21,7 +21,9 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-public class SwordListener implements Listener {
+public class
+
+SwordListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void onDamage(EntityDamageByEntityEvent event) {
         // If it's not a possible cause

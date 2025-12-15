@@ -9,6 +9,7 @@ depend: [Slimefun]
 softdepend: [GuizhanLibPlugin, AuraSkills]
 version: ${project.version}
 api-version: 1.16
+folia-supported: true
 
 commands:
   foxymachines:
