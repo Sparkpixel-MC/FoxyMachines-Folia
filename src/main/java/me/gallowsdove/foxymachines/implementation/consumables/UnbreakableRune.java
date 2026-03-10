@@ -1,6 +1,5 @@
 package me.gallowsdove.foxymachines.implementation.consumables;
 
-import io.github.mooy1.infinitylib.common.Scheduler;
 import io.github.mooy1.infinitylib.core.AddonConfig;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
@@ -23,12 +22,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 public class UnbreakableRune extends SimpleSlimefunItem<ItemDropHandler> {
@@ -71,8 +65,9 @@ public class UnbreakableRune extends SimpleSlimefunItem<ItemDropHandler> {
                     return true;
                 }
 
-                Scheduler.run(20, () -> activate(p, item));
-
+                item.getScheduler().run(FoxyMachines.getInstance(),
+                        scheduledTask -> activate(p, item),
+                        null);
                 return true;
             }
             return false;
@@ -94,8 +89,7 @@ public class UnbreakableRune extends SimpleSlimefunItem<ItemDropHandler> {
 
             if (itemStack.getAmount() == 1) {
                 l.getWorld().strikeLightningEffect(l);
-
-                Scheduler.run(10, () -> {
+                rune.getScheduler().run(FoxyMachines.getInstance(), scheduledTask -> {
                     if (rune.isValid() && item.isValid() && itemStack.getAmount() == 1 && setUnbreakable(itemStack)) {
                         l.getWorld().createExplosion(l, 0);
                         l.getWorld().playSound(l, Sound.ENTITY_GENERIC_EXPLODE, 0.3F, 1);
@@ -109,7 +103,8 @@ public class UnbreakableRune extends SimpleSlimefunItem<ItemDropHandler> {
                     } else {
                         p.sendMessage(ChatColor.LIGHT_PURPLE + "该物品无法变成不可破坏");
                     }
-                });
+                }, null);
+                // =====================================================
             } else {
                 p.sendMessage(ChatColor.LIGHT_PURPLE + "该物品无法变成不可破坏");
             }
