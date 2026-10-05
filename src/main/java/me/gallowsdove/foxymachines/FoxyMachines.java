@@ -4,11 +4,9 @@ import io.github.mooy1.infinitylib.common.Events;
 import io.github.mooy1.infinitylib.common.Scheduler;
 import io.github.mooy1.infinitylib.core.AbstractAddon;
 import io.github.mooy1.infinitylib.metrics.bukkit.Metrics;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.updater.BlobBuildUpdater;
 import lombok.SneakyThrows;
 import me.gallowsdove.foxymachines.abstracts.AbstractWand;
 import me.gallowsdove.foxymachines.abstracts.CustomBoss;
-import me.gallowsdove.foxymachines.commands.ChunkLoaderLimitCommand;
 import me.gallowsdove.foxymachines.commands.KillallCommand;
 import me.gallowsdove.foxymachines.commands.ListallCommand;
 import me.gallowsdove.foxymachines.commands.QuestCommand;
@@ -17,7 +15,19 @@ import me.gallowsdove.foxymachines.commands.SummonCommand;
 import me.gallowsdove.foxymachines.implementation.consumables.UnbreakableRune;
 import me.gallowsdove.foxymachines.implementation.machines.ForcefieldDome;
 import me.gallowsdove.foxymachines.implementation.tools.BerryBushTrimmer;
-import me.gallowsdove.foxymachines.listeners.*;
+import me.gallowsdove.foxymachines.listeners.ArmorListener;
+import me.gallowsdove.foxymachines.listeners.BerryBushListener;
+import me.gallowsdove.foxymachines.listeners.BoostedRailListener;
+import me.gallowsdove.foxymachines.listeners.BowListener;
+import me.gallowsdove.foxymachines.listeners.ChunkLoadListener;
+import me.gallowsdove.foxymachines.listeners.ChunkLoaderListener;
+import me.gallowsdove.foxymachines.listeners.ForcefieldListener;
+import me.gallowsdove.foxymachines.listeners.GhostBlockListener;
+import me.gallowsdove.foxymachines.listeners.PoseidonsFishingRodListener;
+import me.gallowsdove.foxymachines.listeners.PositionSelectorListener;
+import me.gallowsdove.foxymachines.listeners.RemoteControllerListener;
+import me.gallowsdove.foxymachines.listeners.SacrificialAltarListener;
+import me.gallowsdove.foxymachines.listeners.SwordListener;
 import me.gallowsdove.foxymachines.tasks.GhostBlockTask;
 import me.gallowsdove.foxymachines.tasks.MobTicker;
 import me.gallowsdove.foxymachines.tasks.QuestTicker;
@@ -34,7 +44,7 @@ public class FoxyMachines extends AbstractAddon {
     public String folderPath;
 
     public FoxyMachines() {
-        super ("SlimefunGuguProject", "FoxyMachines", "master", "auto-update");
+        super("SlimefunGuguProject", "FoxyMachines", "master", "auto-update");
     }
 
     @Override
