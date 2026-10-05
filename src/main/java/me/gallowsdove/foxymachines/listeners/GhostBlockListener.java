@@ -1,10 +1,10 @@
 package me.gallowsdove.foxymachines.listeners;
 
 import me.gallowsdove.foxymachines.implementation.materials.GhostBlock;
+import io.github.mooy1.infinitylib.common.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
-import me.gallowsdove.foxymachines.FoxyMachines;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.event.EventHandler;
@@ -36,16 +36,19 @@ public class GhostBlockListener implements Listener {
             }
         }
 
-        Bukkit.getScheduler().runTaskLater(FoxyMachines.getInstance(), () -> {
+        Scheduler.runAtRegion(e.getLocation(), () -> {
             for (Map.Entry<UUID, Location> entry : preExplosionLocations.entrySet()) {
+                preExplosionLocations.remove(entry.getKey());
                 Entity ent = Bukkit.getEntity(entry.getKey());
                 if (ent instanceof FallingBlock fb && GhostBlock.isGhostBlock(fb)) {
-                    fb.teleport(entry.getValue());
-                    fb.setVelocity(new Vector(0, 0, 0));
-                    fb.setGravity(false);
+                    fb.teleportAsync(entry.getValue()).thenAccept(unused -> {
+                        if (fb.isValid()) {
+                            fb.setVelocity(new Vector(0, 0, 0));
+                            fb.setGravity(false);
+                        }
+                    });
                 }
-                preExplosionLocations.remove(entry.getKey());
             }
-        }, 1L);
+        });
     }
 }

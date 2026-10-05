@@ -21,9 +21,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GhostBlock extends SlimefunItem {
 
@@ -32,7 +32,7 @@ public class GhostBlock extends SlimefunItem {
     public static final Set<Material> EXCLUDED = Set.of(Material.BARRIER, Material.SPAWNER, Material.COMMAND_BLOCK,
             Material.STRUCTURE_BLOCK, Material.REPEATING_COMMAND_BLOCK, Material.CHAIN_COMMAND_BLOCK, Material.JIGSAW);
 
-    public static final Set<UUID> BLOCK_CACHE = new HashSet<>();
+    public static final Set<UUID> BLOCK_CACHE = ConcurrentHashMap.newKeySet();
 
     @Nonnull
     private final Material material;

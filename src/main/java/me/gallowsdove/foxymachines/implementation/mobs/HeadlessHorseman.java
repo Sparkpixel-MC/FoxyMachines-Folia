@@ -157,7 +157,7 @@ public class HeadlessHorseman extends CustomBoss {
                 return;
             }
 
-            Scheduler.run(4, () -> {
+            Scheduler.runAtRegion(playerLocation, 4, () -> {
                 playerLocation.getWorld().strikeLightningEffect(playerLocation);
                 if (!player.isValid()) {
                     return;

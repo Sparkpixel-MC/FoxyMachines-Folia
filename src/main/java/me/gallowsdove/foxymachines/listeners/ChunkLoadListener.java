@@ -11,11 +11,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 
 import javax.annotation.Nonnull;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ChunkLoadListener implements Listener {
-    private static final Set<ChunkPosition> SCANNED_CHUNKS = new HashSet<>();
+    private static final Set<ChunkPosition> SCANNED_CHUNKS = ConcurrentHashMap.newKeySet();
 
     @EventHandler
     public void onChunkLoad(@Nonnull ChunkLoadEvent e) {

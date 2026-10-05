@@ -23,9 +23,10 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BerryBushTrimmer extends SlimefunItem {
-    public static Set<SimpleLocation> TRIMMED_BLOCKS = new HashSet<>();
+    public static Set<SimpleLocation> TRIMMED_BLOCKS = ConcurrentHashMap.newKeySet();
 
     public BerryBushTrimmer() {
         super(Items.TOOLS_ITEM_GROUP, Items.BERRY_BUSH_TRIMMER, RecipeType.ENHANCED_CRAFTING_TABLE, new ItemStack[] {
@@ -106,10 +107,13 @@ public class BerryBushTrimmer extends SlimefunItem {
         try (BufferedReader reader = new BufferedReader(new FileReader(file));) {
             String json = reader.readLine();
             Type type = new TypeToken<HashSet<SimpleLocation>>() {}.getType();
-            TRIMMED_BLOCKS = gson.fromJson(json, type);
+            Set<SimpleLocation> loaded = gson.fromJson(json, type);
 
-            if (TRIMMED_BLOCKS == null) {
-                TRIMMED_BLOCKS = new HashSet<>();
+            if (loaded == null) {
+                TRIMMED_BLOCKS = ConcurrentHashMap.newKeySet();
+            } else {
+                TRIMMED_BLOCKS = ConcurrentHashMap.newKeySet();
+                TRIMMED_BLOCKS.addAll(loaded);
             }
         }
 

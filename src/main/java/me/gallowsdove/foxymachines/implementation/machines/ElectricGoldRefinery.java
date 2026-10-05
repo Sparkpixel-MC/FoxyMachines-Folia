@@ -37,6 +37,7 @@ import org.bukkit.persistence.PersistentDataType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class ElectricGoldRefinery extends SlimefunItem implements EnergyNetComponent {
@@ -48,8 +49,8 @@ public class ElectricGoldRefinery extends SlimefunItem implements EnergyNetCompo
     public static final int ENERGY_CONSUMPTION = 36;
     public static final int CAPACITY = 512;
 
-    public static Map<Block, MachineRecipe> processing = new HashMap<>();
-    public static Map<Block, Integer> progress = new HashMap<>();
+    public static Map<Block, MachineRecipe> processing = new ConcurrentHashMap<>();
+    public static Map<Block, Integer> progress = new ConcurrentHashMap<>();
 
     public ElectricGoldRefinery() {
         super(Items.MACHINES_ITEM_GROUP, Items.ELECTRIC_GOLD_REFINERY, RecipeType.ENHANCED_CRAFTING_TABLE, new ItemStack[] {

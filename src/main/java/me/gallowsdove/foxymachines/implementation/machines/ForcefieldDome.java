@@ -32,17 +32,19 @@ import javax.annotation.Nonnull;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class ForcefieldDome extends SlimefunItem implements EnergyNetComponent {
 
-    public static HashSet<Block> FORCEFIELD_BLOCKS = new HashSet<>();
+    public static Set<Block> FORCEFIELD_BLOCKS = ConcurrentHashMap.newKeySet();
 
     public static final int ENERGY_CONSUMPTION = 6000;
 
     private static final Set<Material> MATERIALS_TO_REPLACE = Set.of(Material.AIR, Material.CAVE_AIR, Material.WATER,
             Material.LAVA);
 
-    public static ArrayList<SimpleLocation> domeLocations = new ArrayList<>();
+    public static List<SimpleLocation> domeLocations = new CopyOnWriteArrayList<>();
 
     public static ForcefieldDome INSTANCE = new ForcefieldDome();
 
@@ -160,32 +162,36 @@ public final class ForcefieldDome extends SlimefunItem implements EnergyNetCompo
 
     private void setDomeActive(@Nonnull Block b) {
         ArrayList<Block> domeBlocks = EmptySphereBlocks.get(b, 32);
+        UUID uuid = UUID.fromString(StorageCacheUtils.getData(b.getLocation(), "owner"));
 
         for (Block block : domeBlocks) {
-            UUID uuid = UUID.fromString(StorageCacheUtils.getData(b.getLocation(), "owner"));
-            if (Slimefun.getProtectionManager().hasPermission(Bukkit.getOfflinePlayer(uuid), block, Interaction.BREAK_BLOCK)) {
-                if (MATERIALS_TO_REPLACE.contains(block.getType())) {
-                    block.setType(Material.BARRIER);
-                } else if (block.getType() != Material.BARRIER) {
-                    FORCEFIELD_BLOCKS.add(block);
+            Scheduler.runAtRegion(block.getLocation(), () -> {
+                if (Slimefun.getProtectionManager().hasPermission(Bukkit.getOfflinePlayer(uuid), block, Interaction.BREAK_BLOCK)) {
+                    if (MATERIALS_TO_REPLACE.contains(block.getType())) {
+                        block.setType(Material.BARRIER);
+                    } else if (block.getType() != Material.BARRIER) {
+                        FORCEFIELD_BLOCKS.add(block);
+                    }
                 }
-            }
+            });
         }
         StorageCacheUtils.setData(b.getLocation(), "active", "true");
     }
 
     private void setDomeInactive(@Nonnull Block b) {
         ArrayList<Block> domeBlocks = EmptySphereBlocks.get(b, 32);
+        UUID uuid = UUID.fromString(StorageCacheUtils.getData(b.getLocation(), "owner"));
 
-        for(Block block: domeBlocks) {
-            UUID uuid = UUID.fromString(StorageCacheUtils.getData(b.getLocation(), "owner"));
-            if (Slimefun.getProtectionManager().hasPermission(Bukkit.getOfflinePlayer(uuid), block, Interaction.BREAK_BLOCK)) {
-                if (block.getType() == Material.BARRIER) {
-                    block.setType(Material.AIR);
-                } else {
-                    FORCEFIELD_BLOCKS.remove(block);
+        for (Block block : domeBlocks) {
+            Scheduler.runAtRegion(block.getLocation(), () -> {
+                if (Slimefun.getProtectionManager().hasPermission(Bukkit.getOfflinePlayer(uuid), block, Interaction.BREAK_BLOCK)) {
+                    if (block.getType() == Material.BARRIER) {
+                        block.setType(Material.AIR);
+                    } else {
+                        FORCEFIELD_BLOCKS.remove(block);
+                    }
                 }
-            }
+            });
         }
         StorageCacheUtils.setData(b.getLocation(), "active", "false");
     }
@@ -218,20 +224,37 @@ public final class ForcefieldDome extends SlimefunItem implements EnergyNetCompo
     }
 
     public void setupDomes() {
-        for (SimpleLocation loc: domeLocations) {
+        for (SimpleLocation loc: new ArrayList<>(domeLocations)) {
             World w = Bukkit.getServer().getWorld(UUID.fromString(loc.getWorldUUID()));
             if (w == null) {
                 domeLocations.remove(loc);
                 continue;
             }
-            Block b = w.getBlockAt(loc.getX(), loc.getY(), loc.getZ());
-            if (StorageCacheUtils.getData(b.getLocation(), "active").equals("true")) {
-                setDomeActive(b);
-            }
-            StorageCacheUtils.setData(b.getLocation(), "cooldown", "false");
+            Location l = new Location(w, loc.getX(), loc.getY(), loc.getZ());
+            Scheduler.runAtRegion(l, () -> {
+                Block b = l.getBlock();
+                if (StorageCacheUtils.getData(b.getLocation(), "active").equals("true")) {
+                    setDomeActive(b);
+                }
+                StorageCacheUtils.setData(b.getLocation(), "cooldown", "false");
+            });
         }
     }
 
+
+    public static boolean isInsideDome(@Nonnull Location l) {
+        for (SimpleLocation loc: domeLocations) {
+            if (l.getWorld() != null && l.getWorld().getUID().toString().equals(loc.getWorldUUID())) {
+                int xdif = (int) (l.getX() - loc.getX());
+                int ydif = (int) (l.getY() - loc.getY());
+                int zdif = (int) (l.getZ() - loc.getZ());
+                if (Math.floor(Math.sqrt((xdif * xdif) + (ydif * ydif) + (zdif * zdif))) <= 32) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public static void saveDomeLocations() throws IOException {
         Gson gson = new Gson();
@@ -267,10 +290,12 @@ public final class ForcefieldDome extends SlimefunItem implements EnergyNetCompo
         reader.close();
 
         Type type = new TypeToken<ArrayList<SimpleLocation>>() {}.getType();
-        ForcefieldDome.domeLocations = gson.fromJson(json, type);
+        List<SimpleLocation> loaded = gson.fromJson(json, type);
 
-        if (ForcefieldDome.domeLocations == null) {
-            ForcefieldDome.domeLocations = new ArrayList<>();
+        if (loaded == null) {
+            ForcefieldDome.domeLocations = new CopyOnWriteArrayList<>();
+        } else {
+            ForcefieldDome.domeLocations = new CopyOnWriteArrayList<>(loaded);
         }
     }
 

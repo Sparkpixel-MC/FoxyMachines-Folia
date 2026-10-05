@@ -5,6 +5,7 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.gallowsdove.foxymachines.FoxyMachines;
 import me.gallowsdove.foxymachines.Items;
+import me.gallowsdove.foxymachines.implementation.machines.ChunkLoader;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -33,7 +34,7 @@ public class ChunkLoaderListener implements Listener {
         }
 
         Block b = e.getBlockPlaced();
-        if (b.getChunk().isForceLoaded()) {
+        if (b.getWorld().getPluginChunkTickets(b.getX() >> 4, b.getZ() >> 4).contains(FoxyMachines.getInstance())) {
             e.setCancelled(true);
             p.sendMessage(ChatColor.LIGHT_PURPLE + "该区块已经处于强制加载状态，无法放置区块加载器！");
             return;
@@ -61,6 +62,7 @@ public class ChunkLoaderListener implements Listener {
         }
 
         p.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, i);
-        b.getChunk().setForceLoaded(true);
+        b.getWorld().addPluginChunkTicket(b.getX() >> 4, b.getZ() >> 4, FoxyMachines.getInstance());
+        ChunkLoader.addLoader(b);
     }
 }

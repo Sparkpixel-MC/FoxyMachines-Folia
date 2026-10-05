@@ -13,6 +13,7 @@ import me.gallowsdove.foxymachines.commands.QuestCommand;
 import me.gallowsdove.foxymachines.commands.SacrificialAltarCommand;
 import me.gallowsdove.foxymachines.commands.SummonCommand;
 import me.gallowsdove.foxymachines.implementation.consumables.UnbreakableRune;
+import me.gallowsdove.foxymachines.implementation.machines.ChunkLoader;
 import me.gallowsdove.foxymachines.implementation.machines.ForcefieldDome;
 import me.gallowsdove.foxymachines.implementation.tools.BerryBushTrimmer;
 import me.gallowsdove.foxymachines.listeners.ArmorListener;
@@ -86,7 +87,9 @@ public class FoxyMachines extends AbstractAddon {
         this.folderPath = getDataFolder().getAbsolutePath() + File.separator + "data-storage" + File.separator;
         BerryBushTrimmer.loadTrimmedBlocks();
         ForcefieldDome.loadDomeLocations();
+        ChunkLoader.loadLoaderLocations();
         Scheduler.run(() -> ForcefieldDome.INSTANCE.setupDomes());
+        ChunkLoader.applyLoaderTickets();
         Scheduler.repeat(240, 10, new QuestTicker());
         Scheduler.repeat(100, new GhostBlockTask());
         if (getConfig().getBoolean("custom-mobs")) {
@@ -104,6 +107,7 @@ public class FoxyMachines extends AbstractAddon {
     public void disable() {
         BerryBushTrimmer.saveTrimmedBlocks();
         ForcefieldDome.saveDomeLocations();
+        ChunkLoader.saveLoaderLocations();
         if (getConfig().getBoolean("custom-mobs")) {
             CustomBoss.removeBossBars();
         }

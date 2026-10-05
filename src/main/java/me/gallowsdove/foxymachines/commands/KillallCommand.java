@@ -1,6 +1,7 @@
 package me.gallowsdove.foxymachines.commands;
 
 import io.github.mooy1.infinitylib.commands.SubCommand;
+import io.github.mooy1.infinitylib.common.Scheduler;
 import me.gallowsdove.foxymachines.abstracts.CustomBoss;
 import me.gallowsdove.foxymachines.abstracts.CustomMob;
 import org.bukkit.Bukkit;
@@ -36,7 +37,7 @@ public class KillallCommand extends SubCommand {
             for (UUID uuid : uuids) {
                 Entity entity = Bukkit.getEntity(uuid);
                 if (entity instanceof LivingEntity && entity.getWorld().equals(player.getWorld())) {
-                    entity.remove();
+                    Scheduler.runAtEntity(entity, entity::remove);
                     count++;
                 }
             }

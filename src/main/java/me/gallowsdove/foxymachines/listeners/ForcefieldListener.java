@@ -1,6 +1,7 @@
 package me.gallowsdove.foxymachines.listeners;
 
 import io.github.thebusybiscuit.slimefun4.api.events.ExplosiveToolBreakBlocksEvent;
+import io.github.mooy1.infinitylib.common.Scheduler;
 import me.gallowsdove.foxymachines.FoxyMachines;
 import me.gallowsdove.foxymachines.implementation.machines.ForcefieldDome;
 import me.gallowsdove.foxymachines.utils.SimpleLocation;
@@ -9,12 +10,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
@@ -27,7 +31,7 @@ public class ForcefieldListener implements Listener {
         Block b = e.getBlock();
 
         if (ForcefieldDome.FORCEFIELD_BLOCKS.remove(b)) {
-            Bukkit.getGlobalRegionScheduler().run(FoxyMachines.getInstance(), scheduledTask -> b.setType(Material.BARRIER));
+            Scheduler.runAtRegion(b.getLocation(), () -> b.setType(Material.BARRIER));
         }
     }
 
@@ -36,7 +40,7 @@ public class ForcefieldListener implements Listener {
         Block b = e.getBlock();
 
         if (ForcefieldDome.FORCEFIELD_BLOCKS.remove(b)) {
-            Bukkit.getGlobalRegionScheduler().run(FoxyMachines.getInstance(), scheduledTask -> b.setType(Material.BARRIER));
+            Scheduler.runAtRegion(b.getLocation(), () -> b.setType(Material.BARRIER));
         }
     }
 
@@ -45,7 +49,7 @@ public class ForcefieldListener implements Listener {
         Block b = e.getBlock();
 
         if (ForcefieldDome.FORCEFIELD_BLOCKS.remove(b)) {
-            Bukkit.getGlobalRegionScheduler().run(FoxyMachines.getInstance(), scheduledTask -> b.setType(Material.BARRIER));
+            Scheduler.runAtRegion(b.getLocation(), () -> b.setType(Material.BARRIER));
         }
     }
 
@@ -54,7 +58,7 @@ public class ForcefieldListener implements Listener {
         Block b = e.getBlock();
 
         if (ForcefieldDome.FORCEFIELD_BLOCKS.remove(b)) {
-            Bukkit.getGlobalRegionScheduler().run(FoxyMachines.getInstance(), scheduledTask -> b.setType(Material.BARRIER));
+            Scheduler.runAtRegion(b.getLocation(), () -> b.setType(Material.BARRIER));
         }
     }
 
@@ -63,7 +67,7 @@ public class ForcefieldListener implements Listener {
         Block b = e.getBlock();
 
         if (ForcefieldDome.FORCEFIELD_BLOCKS.remove(b)) {
-            Bukkit.getGlobalRegionScheduler().run(FoxyMachines.getInstance(), scheduledTask -> b.setType(Material.BARRIER));
+            Scheduler.runAtRegion(b.getLocation(), () -> b.setType(Material.BARRIER));
         }
     }
 
@@ -76,7 +80,7 @@ public class ForcefieldListener implements Listener {
         Block b = e.getBlock();
 
         if (ForcefieldDome.FORCEFIELD_BLOCKS.remove(b)) {
-            Bukkit.getGlobalRegionScheduler().run(FoxyMachines.getInstance(), scheduledTask -> b.setType(Material.BARRIER));
+            Scheduler.runAtRegion(b.getLocation(), () -> b.setType(Material.BARRIER));
         }
     }
 
@@ -84,7 +88,23 @@ public class ForcefieldListener implements Listener {
     private void onBlocksBreakByExplosiveToolEvent(@Nonnull ExplosiveToolBreakBlocksEvent e) {
         for (Block b : e.getAdditionalBlocks()) {
             if (ForcefieldDome.FORCEFIELD_BLOCKS.remove(b)) {
-                Bukkit.getGlobalRegionScheduler().run(FoxyMachines.getInstance(), scheduledTask -> b.setType(Material.BARRIER));
+                Scheduler.runAtRegion(b.getLocation(), () -> b.setType(Material.BARRIER));
+            }
+        }
+    }
+
+    // 末影珍珠传送：Folia 上 PlayerTeleportEvent 不会触发 (PaperMC/Folia#490)，
+    // 改在珍珠命中时取消，命中取消即阻止传送（Paper 与 Folia 均有效）。
+    @EventHandler(ignoreCancelled = true)
+    private void onEnderPearlHit(@Nonnull ProjectileHitEvent e) {
+        if (!(e.getEntity() instanceof EnderPearl pearl)) {
+            return;
+        }
+
+        if (ForcefieldDome.isInsideDome(pearl.getLocation())) {
+            e.setCancelled(true);
+            if (pearl.getShooter() instanceof Player p) {
+                p.sendMessage(ChatColor.LIGHT_PURPLE + "你不能传送到穹顶力场内部!");
             }
         }
     }

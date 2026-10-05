@@ -27,18 +27,17 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public abstract class CustomMob {
 
-    public static final Map<String, CustomMob> MOBS = new HashMap<>();
-    public static final Map<CustomMob, Set<UUID>> MOB_CACHE = new HashMap<>();
+    public static final Map<String, CustomMob> MOBS = new ConcurrentHashMap<>();
+    public static final Map<CustomMob, Set<UUID>> MOB_CACHE = new ConcurrentHashMap<>();
 
     @Nullable
     public static CustomMob getById(@Nonnull String id) {
@@ -125,9 +124,7 @@ public abstract class CustomMob {
     }
 
     public void cacheEntity(@Nonnull UUID uuid) {
-        Set<UUID> entities = MOB_CACHE.getOrDefault(this, new HashSet<>());
-        entities.add(uuid);
-        MOB_CACHE.put(this, entities);
+        MOB_CACHE.computeIfAbsent(this, k -> ConcurrentHashMap.newKeySet()).add(uuid);
     }
 
     public void uncacheEntity(@Nonnull Entity entity) {
@@ -135,9 +132,10 @@ public abstract class CustomMob {
     }
 
     public void uncacheEntity(@Nonnull UUID uuid) {
-        Set<UUID> entities = MOB_CACHE.getOrDefault(this, new HashSet<>());
-        entities.remove(uuid);
-        MOB_CACHE.put(this, entities);
+        Set<UUID> entities = MOB_CACHE.get(this);
+        if (entities != null) {
+            entities.remove(uuid);
+        }
     }
 
     public static void debug() {

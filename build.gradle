@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+    alias(libs.plugins.shadow)
+}
+
+group = 'me.gallowsdove'
+version = '8.2-Folia'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'papermc'
+        url = uri('https://repo.papermc.io/repository/maven-public/')
+    }
+    maven {
+        name = 'jitpack'
+        url = uri('https://jitpack.io')
+    }
+}
+
+dependencies {
+    compileOnly(libs.folia.api)
+    compileOnly(libs.slimefun4)
+
+    implementation(files('libs/InfinityLib.jar'))
+
+    compileOnly('dev.aurelium:auraskills-api-bukkit:2.0.0')
+    compileOnly('net.guizhanss:GuizhanLibPlugin:1.7.6')
+
+    implementation('com.google.code.gson:gson:2.9.0')
+    compileOnly('com.google.code.findbugs:jsr305:3.0.2')
+
+    compileOnly('org.projectlombok:lombok:1.18.42')
+    annotationProcessor('org.projectlombok:lombok:1.18.42')
+}
+
+processResources {
+    filesMatching('**/*.yml') {
+        expand('version': project.version)
+    }
+}
+
+jar {
+    archiveClassifier = 'unshaded'
+}
+
+shadowJar {
+    archiveClassifier = ''
+    minimize {
+        exclude(dependency('com.google.code.gson:gson:.*'))
+    }
+    relocate('io.github.mooy1.infinitylib', 'me.gallowsdove.foxymachines.infinitylib')
+}
+
+tasks.named('build') {
+    dependsOn tasks.named('shadowJar')
+}

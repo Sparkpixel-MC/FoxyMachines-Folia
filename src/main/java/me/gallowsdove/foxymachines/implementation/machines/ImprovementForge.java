@@ -33,6 +33,7 @@ import org.bukkit.inventory.ItemStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class ImprovementForge extends SlimefunItem implements EnergyNetComponent {
@@ -42,8 +43,8 @@ public class ImprovementForge extends SlimefunItem implements EnergyNetComponent
     public static final int ENERGY_CONSUMPTION = 128;
     public static final int CAPACITY = 512;
 
-    public static Map<Block, MachineRecipe> processing = new HashMap<>();
-    public static Map<Block, Integer> progress = new HashMap<>();
+    public static Map<Block, MachineRecipe> processing = new ConcurrentHashMap<>();
+    public static Map<Block, Integer> progress = new ConcurrentHashMap<>();
 
     public static final Material[][] tools = {
             {Material.WOODEN_SWORD, Material.WOODEN_SHOVEL, Material.WOODEN_PICKAXE, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_SHOVEL, Material.LEATHER_BOOTS, Material.LEATHER_LEGGINGS, Material.LEATHER_CHESTPLATE, Material.LEATHER_HELMET},

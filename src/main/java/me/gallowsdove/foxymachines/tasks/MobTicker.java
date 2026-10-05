@@ -1,11 +1,11 @@
 package me.gallowsdove.foxymachines.tasks;
 
+import io.github.mooy1.infinitylib.common.Scheduler;
 import me.gallowsdove.foxymachines.abstracts.CustomMob;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -21,19 +21,20 @@ public class MobTicker implements Runnable {
 
         for (Map.Entry<CustomMob, Set<UUID>> entry : CustomMob.MOB_CACHE.entrySet()) {
             CustomMob customMob = entry.getKey();
-            Set<UUID> entities = entry.getValue();
-            for (UUID uuid : new HashSet<>(entities)) {
+            for (UUID uuid : entry.getValue()) {
                 Entity entity = Bukkit.getEntity(uuid);
-                if (!(entity instanceof LivingEntity livingEntity)) {
-                    if (entity != null) {
-                        entity.remove();
-                    }
-
+                if (entity == null) {
                     customMob.uncacheEntity(uuid);
                     continue;
                 }
 
-                customMob.onMobTick(livingEntity, tick);
+                if (!(entity instanceof LivingEntity livingEntity)) {
+                    Scheduler.runAtEntity(entity, entity::remove);
+                    customMob.uncacheEntity(uuid);
+                    continue;
+                }
+
+                Scheduler.runAtEntity(livingEntity, () -> customMob.onMobTick(livingEntity, tick));
             }
         }
 

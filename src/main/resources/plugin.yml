@@ -7,7 +7,7 @@ website: https://github.com/GallowsDove/FoxyMachines
 
 depend: [Slimefun]
 softdepend: [GuizhanLibPlugin, AuraSkills]
-version: ${project.version}
+version: ${version}
 api-version: 1.16
 folia-supported: true
 

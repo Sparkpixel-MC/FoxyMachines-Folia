@@ -18,16 +18,16 @@ import org.bukkit.event.entity.EntityDeathEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class CustomBoss extends CustomMob {
 
     private static final NamespacedKey KEY = new NamespacedKey(FoxyMachines.getInstance(), "boss");
 
-    private static final Map<LivingEntity, BossBar> instances = new HashMap<>();
+    private static final Map<LivingEntity, BossBar> instances = new ConcurrentHashMap<>();
 
     private final Set<DamageCause> resistances;
 

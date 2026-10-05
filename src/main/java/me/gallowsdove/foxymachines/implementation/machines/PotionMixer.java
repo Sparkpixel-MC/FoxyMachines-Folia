@@ -38,6 +38,7 @@ import org.bukkit.potion.PotionType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PotionMixer extends SlimefunItem implements EnergyNetComponent {
     private static final int[] BORDER = {3, 4, 5, 27, 28, 29, 33, 34, 35, 36, 37, 38, 42, 43, 44};
@@ -46,8 +47,8 @@ public class PotionMixer extends SlimefunItem implements EnergyNetComponent {
     public static final int ENERGY_CONSUMPTION = 28;
     public static final int CAPACITY = 128;
 
-    public static Map<Block, MachineRecipe> processing = new HashMap<>();
-    public static Map<Block, Integer> progress = new HashMap<>();
+    public static Map<Block, MachineRecipe> processing = new ConcurrentHashMap<>();
+    public static Map<Block, Integer> progress = new ConcurrentHashMap<>();
 
     public PotionMixer() {
         super(Items.MACHINES_ITEM_GROUP, Items.POTION_MIXER, RecipeType.ENHANCED_CRAFTING_TABLE, new ItemStack[] {

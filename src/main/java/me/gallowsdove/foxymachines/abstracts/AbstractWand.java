@@ -1,5 +1,6 @@
 package me.gallowsdove.foxymachines.abstracts;
 
+import io.github.mooy1.infinitylib.common.Scheduler;
 import io.github.mooy1.infinitylib.core.AddonConfig;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -131,7 +132,7 @@ public abstract class AbstractWand extends SlimefunItem implements NotPlaceable,
                     if (removeItemCharge(e.getItem(), getCostPerBlock() * locs.size())) {
                         inventory.removeItem(blocks);
                         for (Location loc : locs) {
-                            Bukkit.getScheduler().runTask(FoxyMachines.getInstance(), () -> {
+                            Scheduler.runAtRegion(loc, () -> {
                                 loc.getBlock().setType(material);
                                 if (Utils.isAuraSkillsLoaded()) {
                                     AuraSkillsCompat.addPlacedBlock(loc.getBlock());

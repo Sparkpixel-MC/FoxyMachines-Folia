@@ -23,11 +23,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 public class UnbreakableRune extends SimpleSlimefunItem<ItemDropHandler> {
 
-    private static final Map<String, Set<String>> BLACKLIST = new HashMap<>();
+    private static final Map<String, Set<String>> BLACKLIST = new ConcurrentHashMap<>();
     private static final double RANGE = 1.5;
 
     public static void init() {
@@ -43,7 +44,9 @@ public class UnbreakableRune extends SimpleSlimefunItem<ItemDropHandler> {
         }
 
         for (String addon : blacklist.getKeys(false)) {
-            BLACKLIST.put(addon, new HashSet<>(blacklist.getStringList(addon)));
+            Set<String> materials = ConcurrentHashMap.newKeySet();
+            materials.addAll(blacklist.getStringList(addon));
+            BLACKLIST.put(addon, materials);
         }
     }
 
