@@ -7,10 +7,10 @@ FoxyMachines 向 [Slimefun](https://github.com/Slimefun/Slimefun4) 添加了许�
 **你可以在 items.yml 中禁用任何你不想要的物品**
 
 汉化作者推荐: 配合 [MobCapturer](https://github.com/ybw0014/MobCapturer) 可轻松将生物捕捉至献祭祭坛。
- 
+
 ## 下载
 
-[![Build status](https://builds.guizhanss.com/api/badge/SlimefunGuguProject/FoxyMachines/master/latest)](https://builds.guizhanss.com/SlimefunGuguProject/FoxyMachines/master)
+[下载 FoxyMachines](https://resources.guizhanss.com/plugin/FoxyMachines)
 
 ## 首领 (Boss)
 
