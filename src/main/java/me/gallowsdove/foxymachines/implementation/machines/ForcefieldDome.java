@@ -128,7 +128,7 @@ public final class ForcefieldDome extends SlimefunItem implements EnergyNetCompo
                             e.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "已激活穹顶力场");
 
                             StorageCacheUtils.setData(b.getLocation(), "cooldown", "true");
-                            Scheduler.runAsync(200, () ->
+                            Scheduler.runAtRegion(b.getLocation(), 200, () ->
                                     StorageCacheUtils.setData(b.getLocation(), "cooldown", "false"));
                         } else {
                             e.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "电力不足");
@@ -138,7 +138,7 @@ public final class ForcefieldDome extends SlimefunItem implements EnergyNetCompo
                         e.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "已关闭穹顶力场");
 
                         StorageCacheUtils.setData(b.getLocation(), "cooldown", "true");
-                        Scheduler.runAsync(200, () ->
+                        Scheduler.runAtRegion(b.getLocation(), 200, () ->
                                 StorageCacheUtils.setData(b.getLocation(), "cooldown", "false"));
                     }
                 } else {
@@ -205,7 +205,7 @@ public final class ForcefieldDome extends SlimefunItem implements EnergyNetCompo
                     p.sendMessage(ChatColor.LIGHT_PURPLE + "穹顶力场已激活.");
 
                     StorageCacheUtils.setData(b.getLocation(), "cooldown", "true");
-                    Scheduler.runAsync(200, () ->
+                    Scheduler.runAtRegion(b.getLocation(), 200, () ->
                             StorageCacheUtils.setData(b.getLocation(), "cooldown", "false"));
                 } else {
                     p.sendMessage(ChatColor.LIGHT_PURPLE + "电力不足");
@@ -215,7 +215,7 @@ public final class ForcefieldDome extends SlimefunItem implements EnergyNetCompo
                 p.sendMessage(ChatColor.LIGHT_PURPLE + "穹顶力场已关闭");
 
                 StorageCacheUtils.setData(b.getLocation(), "cooldown", "true");
-                Scheduler.runAsync(200, () ->
+                Scheduler.runAtRegion(b.getLocation(), 200, () ->
                         StorageCacheUtils.setData(b.getLocation(), "cooldown", "false"));
             }
         } else {
