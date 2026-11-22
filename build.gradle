@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'me.gallowsdove'
-version = '8.2-Folia'
+version = '8.3-Folia'
 
 java {
     toolchain {

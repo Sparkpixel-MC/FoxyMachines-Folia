@@ -2,7 +2,7 @@
 
 FoxyMachines 向 [Slimefun](https://github.com/Slimefun/Slimefun4) 添加了许多的机器与工具。本附属由 GallowsDove 热情制作。
 
-**本附属需要 Java 16 才能运行!**
+**本附属需要 Java 25 才能运行（Folia 26.3）**
 
 **你可以在 items.yml 中禁用任何你不想要的物品**
 
